@@ -23,7 +23,7 @@ elif cat /etc/issue | grep -Eqi "debian"; then
     systempwd="/lib/systemd/system/"
 elif cat /etc/issue | grep -Eqi "ubuntu"; then
     release="ubuntu"
-    systemPackage="apt-get"
+    systemPackage="apt-get" 
     systempwd="/lib/systemd/system/"
 elif cat /etc/issue | grep -Eqi "centos|red hat|redhat"; then
     release="centos"
@@ -194,13 +194,12 @@ cat > ${systempwd}trojan.service <<-EOF
 Description=trojan  
 After=network.target  
    
-[Service]  
-Type=simple  
-PIDFile=/usr/src/trojan/trojan/trojan.pid
-ExecStart=/usr/src/trojan/trojan -c "/usr/src/trojan/server.conf"  
-ExecReload=  
-ExecStop=kill -9 $(pidof /usr/src/trojan/trojan)  
-PrivateTmp=true  
+[Service]
+#2020/3/25解决ubuntu16.04 的错误
+Type=simple
+StandarError=journal
+ExecStart="/usr/src/trojan/trojan" -c "/usr/src/trojan/server.conf"
+ExecReload=/bin/kill -HUP $MAINPID
    
 [Install]  
 WantedBy=multi-user.target
